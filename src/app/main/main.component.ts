@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 
+import { NgForm } from '@angular/forms';
+
 @Component({
   selector: 'guessmynumber-main',
   templateUrl: './main.component.html',
@@ -7,8 +9,12 @@ import { Component, OnInit } from '@angular/core';
 })
 export class MainComponent implements OnInit {
 
+
+  secretNumber!: number;
+
+
   // La fonction pour obtenir un nombre aléatoire est initialisé
-  // au lancement du composant main;
+  // au lancement du component main;
   ngOnInit(): void {
     this.randomIntFromInterval(1, 20);
   }
@@ -17,7 +23,7 @@ export class MainComponent implements OnInit {
   randomIntFromInterval(min: number, max:number) {
 
     // Déclaration de la variable du nombre secret;
-    let secretNumber = null;
+    let secretNumber: number;
 
     // Générer et stocker le nombre aléatoire dans la variable secretNumber;
     secretNumber = Math.floor(Math.random() * (max - min + 1) + min);
@@ -26,7 +32,22 @@ export class MainComponent implements OnInit {
     console.log(secretNumber);
 
     // Retour de la variable secretNumber;
-    return secretNumber;
+    return this.secretNumber = secretNumber;
+  }
+
+  onSubmit(f: NgForm) {
+
+    const secretNumber: number = this.secretNumber;
+
+    let guess: number = f.value.checkNumber;
+
+    if (guess === this.secretNumber) {
+      alert('You Guessed It!');
+    } else if (guess < this.secretNumber){
+      alert('Oops.. You are too low!');
+    } else {
+      alert('Damn! You are too high!');
+    }
   }
 
 }

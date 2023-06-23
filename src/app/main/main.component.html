@@ -1,12 +1,15 @@
-
-<div class="container"><p class="between text-end mt-3">(Between 1 and 20)</p></div>
+<div class="container">
+  <p class="between text-end mt-3">(Between 1 and 20)</p>
+</div>
 
 <div class="number">?</div>
 
 <main class="container game">
   <section class="left">
-    <input type="number" min="1" class="guess" />
-    <button class="btn">Check !</button>
+    <form #f="ngForm" (ngSubmit)="onSubmit(f)">
+      <input type="number" min="1" class="guess" name="checkNumber" ngModel />
+      <button class="btn">Check !</button>
+    </form>
   </section>
 
   <section class="right">
