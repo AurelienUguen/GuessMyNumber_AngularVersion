@@ -1,6 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, Renderer2, ViewChild } from '@angular/core';
 
 import { NgForm } from '@angular/forms';
+
+import { MessageDirective } from '../CustomDirectives/message.directive';
 
 @Component({
   selector: 'guessmynumber-main',
@@ -10,8 +12,17 @@ import { NgForm } from '@angular/forms';
 export class MainComponent implements OnInit {
 
 
-  secretNumber!: number;
+  guessMessage: string = "Start Guessing...";
+  revealSecretNumber: string | number = "?";
 
+  randomMessageLowValue = ['Oops, you are too low!', 'Ouch, this value is low..', 'You should trying a higher number!'];
+  randomMessageHighValue = ['Damn! You are too high..', 'Secret number is lower than this one.', 'You are high bro!'];
+
+  constructor(private elementRef: ElementRef ,private renderer: Renderer2) {
+
+  }
+
+  secretNumber!: number;
 
   // La fonction pour obtenir un nombre aléatoire est initialisé
   // au lancement du component main;
@@ -39,14 +50,18 @@ export class MainComponent implements OnInit {
 
     const secretNumber: number = this.secretNumber;
 
+    const randomSentenceForLowValue = this.randomMessageLowValue[Math.floor(Math.random() * this.randomMessageLowValue.length)];
+    const randomSentenceForHighValue = this.randomMessageHighValue[Math.floor(Math.random() * this.randomMessageHighValue.length)];
+
     let guess: number = f.value.checkNumber;
 
     if (guess === this.secretNumber) {
-      alert('You Guessed It!');
-    } else if (guess < this.secretNumber){
-      alert('Oops.. You are too low!');
+      this.revealSecretNumber = this.secretNumber;
+      this.guessMessage = "Congrats, you guessed it !"
+    } else if (guess < this.secretNumber) {
+      this.guessMessage = randomSentenceForLowValue;
     } else {
-      alert('Damn! You are too high!');
+      this.guessMessage = randomSentenceForHighValue
     }
   }
 

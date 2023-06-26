@@ -8,12 +8,14 @@ import { AppComponent } from './app.component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { HeaderComponent } from './components/header/header.component';
 import { MainComponent } from './main/main.component';
+import { MessageDirective } from './CustomDirectives/message.directive';
 
 @NgModule({
   declarations: [
     AppComponent,
     HeaderComponent,
     MainComponent,
+    MessageDirective,
   ],
   imports: [
     BrowserModule,
