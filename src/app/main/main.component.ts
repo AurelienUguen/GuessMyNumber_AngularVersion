@@ -1,6 +1,6 @@
 import { Component, ElementRef, OnInit, Renderer2, ViewChild } from '@angular/core';
 
-import { NgForm } from '@angular/forms';
+import { Form, NgForm } from '@angular/forms';
 
 import { MessageDirective } from '../CustomDirectives/message.directive';
 
@@ -11,18 +11,19 @@ import { MessageDirective } from '../CustomDirectives/message.directive';
 })
 export class MainComponent implements OnInit {
 
-
+  // Gestionnaire de variable
   guessMessage: string = "Start Guessing...";
+  secretNumber!: number;
   revealSecretNumber: string | number = "?";
-
+  score: number = 20;
+  highscore: number = 0;
+  isGameFinished: boolean = false;
   randomMessageLowValue = ['Oops, you are too low!', 'Ouch, this value is low..', 'You should trying a higher number!'];
   randomMessageHighValue = ['Damn! You are too high..', 'Secret number is lower than this one.', 'You are high bro!'];
 
   constructor(private elementRef: ElementRef ,private renderer: Renderer2) {
 
   }
-
-  secretNumber!: number;
 
   // La fonction pour obtenir un nombre aléatoire est initialisé
   // au lancement du component main;
@@ -46,23 +47,55 @@ export class MainComponent implements OnInit {
     return this.secretNumber = secretNumber;
   }
 
-  onSubmit(f: NgForm) {
+  compareGuessAndSecretNumber(f: NgForm) {
 
-    const secretNumber: number = this.secretNumber;
-
+    // Affichage aléatoire des retours message
     const randomSentenceForLowValue = this.randomMessageLowValue[Math.floor(Math.random() * this.randomMessageLowValue.length)];
     const randomSentenceForHighValue = this.randomMessageHighValue[Math.floor(Math.random() * this.randomMessageHighValue.length)];
 
+    // On stock la valeur du nombre dans l'input dans la variable Guess
     let guess: number = f.value.checkNumber;
 
-    if (guess === this.secretNumber) {
+    // Ici on compare les deux valeurs
+    if(guess === this.secretNumber) {
       this.revealSecretNumber = this.secretNumber;
-      this.guessMessage = "Congrats, you guessed it !"
-    } else if (guess < this.secretNumber) {
+      this.guessMessage = "Congratulations! You guessed it.";
+      this.isGameFinished = true;
+      if(this.score > this.highscore) {
+        this.highscore = this.score;
+      }
+    } else if(guess < this.secretNumber) {
       this.guessMessage = randomSentenceForLowValue;
     } else {
       this.guessMessage = randomSentenceForHighValue
     }
+  }
+
+  updateScore(f: NgForm) {
+
+    let guess: number = f.value.checkNumber;
+
+    if(guess !== this.secretNumber) {
+      this.score -= 1;
+      if(this.score === 0) {
+        this.revealSecretNumber = this.secretNumber;
+        this.guessMessage = "You Lose... Try again!";
+        this.isGameFinished = true;
+      }
+    }
+  }
+
+
+  onSubmit(f: NgForm) {
+
+    // Condition permettant d'arrêter le jeusi victoire ou défaite
+    if(this.isGameFinished) return;
+
+    // Comparaison de la valeur entrée avec le nombre secret
+    this.compareGuessAndSecretNumber(f);
+
+    // Gestion de l'affiche du score avec condition de défaite.
+    this.updateScore(f);
   }
 
 }
